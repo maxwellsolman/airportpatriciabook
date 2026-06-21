@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { STRIPE_BUY_URL, PRICE, PRODUCT, HACKS, FAQ, TESTIMONIALS } from "@/lib/config";
+import { STRIPE_BUY_URL, PRICE, PRODUCT, SECTIONS, FAQ, TESTIMONIALS } from "@/lib/config";
 
 /* ---------- tiny presentational helpers ---------- */
 function Seal({ size = 96, onDark = true }: { size?: number; onDark?: boolean }) {
@@ -184,16 +184,19 @@ export default function Page() {
         <div className="aurora a2" />
         <div className="wrap grid">
           <div>
-            <div className="stars reveal in">
-              <span className="s">★★★★★</span>
-              <span>{PRODUCT.rating} from {PRODUCT.reviews.toLocaleString()} travelers</span>
+            <div className="herotrust reveal in">
+              <span className="rate"><span className="s">★★★★★</span> {PRODUCT.rating}</span>
+              <span className="sep" />
+              <span><b>{PRODUCT.travelers}</b> travelers helped</span>
+              <span className="sep" />
+              <span><b>20 yrs</b> at the checkpoint</span>
             </div>
             <h1 className="reveal in">
-              You&rsquo;re losing hundreds at the airport <span className="em-brass">&mdash; without even knowing it.</span>
+              You&rsquo;re losing hundreds at the airport <span className="em-brass">without even knowing it.</span>
             </h1>
             <p className="lede reveal in">
               Twenty years at the checkpoint taught me exactly where your money leaks. These are the
-              10 hacks I&rsquo;d give my own niece &mdash; the ones airlines and hotels <b>hope you never figure out</b>.
+              10 hacks I&rsquo;d give my own niece. The ones airlines and hotels <b>hope you never figure out</b>.
             </p>
 
             <div className="hchips reveal in">
@@ -244,7 +247,7 @@ export default function Page() {
           <div className="row reveal" style={{ display: "flex", justifyContent: "center", gap: "clamp(1.5rem,6vw,4.5rem)", flexWrap: "wrap", width: "100%" }}>
             <div className="stat"><div className="n"><CountUp to={2000} plus /></div><div className="l">Travelers helped</div></div>
             <div className="stat"><div className="n"><CountUp to={20} suffix=" yrs" /></div><div className="l">At the checkpoint</div></div>
-            <div className="stat"><div className="n">★ <CountUp to={4.9} decimals={1} /></div><div className="l">Average rating</div></div>
+            <div className="stat"><div className="n">★ <CountUp to={4.98} decimals={2} /></div><div className="l">Average rating</div></div>
             <div className="stat"><div className="n"><CountUp to={9.99} prefix="$" decimals={2} /></div><div className="l">One-time, no subscription</div></div>
           </div>
         </div>
@@ -302,20 +305,20 @@ export default function Page() {
         <div className="wrap">
           <div className="shead reveal">
             <span className="kicker">What&rsquo;s inside</span>
-            <h2>Ten hacks. Every one of them pays for the book.</h2>
-            <p>No vague advice you could get anywhere. The specific moves that keep money in your pocket.</p>
+            <h2>Ten hacks across three parts of every trip.</h2>
+            <p>No vague advice you could get anywhere. The specific moves that keep money in your pocket, written out step by step.</p>
           </div>
-          <div className="hacks">
-            {HACKS.map((h, i) => (
-              <div className="hcard reveal" key={h.n} style={{ transitionDelay: `${(i % 2) * 70}ms` }}>
-                <span className="n">{h.n}</span>
-                <div>
-                  <h3>{h.t}</h3>
-                  <p>{h.d}</p>
-                </div>
+          <div className="buckets">
+            {SECTIONS.map((s, i) => (
+              <div className="bucket reveal" key={s.n} style={{ transitionDelay: `${i * 70}ms` }}>
+                <span className="n">{s.n}</span>
+                <span className="count">{s.count}</span>
+                <h3>{s.t}</h3>
+                <p>{s.d}</p>
               </div>
             ))}
           </div>
+          <p className="locknote reveal">The full ten, with the exact step-by-step on each, are waiting inside the guide.</p>
           <div className="bonus reveal">
             <span className="badge">Free bonus</span>
             <p><b>The Pre-Flight Checklist.</b> Every hack distilled into a one-page tear-out you save to your phone and run before each trip.</p>

@@ -18,22 +18,17 @@ export const PRODUCT = {
   name: "Patricia's Top 10 Travel Hacks",
   format: "Instant PDF · 20 pages",
   pages: 20,
-  rating: 4.9,
+  rating: 4.98,
   reviews: 2147,
   travelers: "2,000+",
 };
 
-export const HACKS = [
-  { n: "01", t: "The price drop nobody tells you about", d: "Fares and rooms keep moving after you pay. How to track yours and claw back the difference." },
-  { n: "02", t: "The refund the airline owes you", d: "Cash, not a voucher. The rules nobody reads, and how to actually collect." },
-  { n: "03", t: "Coverage you already paid for", d: "The trip, bag, and rental protection hiding in your credit card. Stop double-buying." },
-  { n: "04", t: "When to actually book", d: "The Tuesday myth, busted. The real cheapest windows for domestic and international." },
-  { n: "05", t: "Beat the bag fees", d: "The carry-on and personal-item play, from someone who watches people overpack all day." },
-  { n: "06", t: "Free seats and the upgrade game", d: "Skip the seat fees that are just fear with a price tag, and get a real shot up front." },
-  { n: "07", t: "Lounge comfort without the status", d: "More ways through that door than you think, even without first class." },
-  { n: "08", t: "Get through my line faster", d: "Pack the bin and stage your stuff the way that gets you through in half the time." },
-  { n: "09", t: "Dodge the airport markup", d: "Beat the seven-dollar water and the eighteen-dollar sandwich without going hungry." },
-  { n: "10", t: "Search smarter and pay less", d: "The multi-city and one-way tricks most travelers get wrong, costing them every trip." },
+// Teaser sections only. We intentionally do NOT list the individual hacks
+// on the site so the value stays behind the purchase.
+export const SECTIONS = [
+  { n: "01", t: "After You Book", count: "4 hacks", d: "The quiet moves that claw money back after you've already paid. Most travelers never know they're owed it." },
+  { n: "02", t: "Booking Smart", count: "3 hacks", d: "When and how to book so you start a trip ahead instead of behind. The timing nobody actually explains." },
+  { n: "03", t: "At The Airport", count: "3 hacks", d: "Everything from my side of the checkpoint that saves you time, stress, and cash on the day you fly." },
 ];
 
 export const FAQ = [
