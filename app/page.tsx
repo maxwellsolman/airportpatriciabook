@@ -1,65 +1,423 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useEffect, useRef, useState } from "react";
+import { STRIPE_BUY_URL, PRICE, PRODUCT, HACKS, FAQ, TESTIMONIALS } from "@/lib/config";
+
+/* ---------- tiny presentational helpers ---------- */
+function Seal({ size = 96, onDark = true }: { size?: number; onDark?: boolean }) {
+  const ring = onDark ? "#c19a52" : "#9a7634";
+  const ring2 = onDark ? "rgba(216,178,107,0.5)" : "rgba(154,118,52,0.45)";
+  const txt = onDark ? "#d8b26b" : "#9a7634";
+  const num = onDark ? "#d8b26b" : "#9a7634";
+  const lbl = onDark ? "rgba(255,255,255,0.8)" : "rgba(122,113,92,0.9)";
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="seal-svg" style={{ width: size, height: size, position: "relative" }}>
+      <svg viewBox="0 0 100 100" width={size} height={size}>
+        <circle cx="50" cy="50" r="48" fill="none" stroke={ring} strokeWidth="1" />
+        <circle cx="50" cy="50" r="40" fill="none" stroke={ring2} strokeWidth="0.6" />
+        <defs>
+          <path id="sealpath" d="M50,50 m-33,0 a33,33 0 1,1 66,0 a33,33 0 1,1 -66,0" />
+        </defs>
+        <text fontFamily="var(--font-ui)" fontSize="6.3" letterSpacing="2" fill={txt} fontWeight="700">
+          <textPath href="#sealpath" startOffset="1%">
+            TWENTY YEARS · AT THE CHECKPOINT ·
+          </textPath>
+        </text>
+      </svg>
+      <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: size * 0.24, color: num, lineHeight: 1 }}>20</span>
+        <span style={{ fontFamily: "var(--font-ui)", fontSize: size * 0.055, letterSpacing: "0.2em", textTransform: "uppercase", color: lbl, marginTop: 2 }}>Years</span>
+      </div>
+    </div>
+  );
+}
+
+const Check = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M20 6L9 17l-5-5" />
+  </svg>
+);
+
+function Buy({ children, className = "", sub }: { children: React.ReactNode; className?: string; sub?: string }) {
+  return (
+    <a href={STRIPE_BUY_URL} target="_blank" rel="noopener noreferrer" className={`btn btn-shine ${className}`}>
+      <span style={{ display: "flex", flexDirection: "column", alignItems: "center", lineHeight: 1.15 }}>
+        <span>{children}</span>
+        {sub ? <span className="sub">{sub}</span> : null}
+      </span>
+    </a>
+  );
+}
+
+/* ---------- hooks ---------- */
+function useReveal() {
+  useEffect(() => {
+    const els = Array.from(document.querySelectorAll<HTMLElement>(".reveal"));
+    if (!("IntersectionObserver" in window)) {
+      els.forEach((e) => e.classList.add("in"));
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((en) => {
+          if (en.isIntersecting) {
+            (en.target as HTMLElement).classList.add("in");
+            io.unobserve(en.target);
+          }
+        });
+      },
+      { threshold: 0.14, rootMargin: "0px 0px -8% 0px" }
+    );
+    els.forEach((e) => io.observe(e));
+    return () => io.disconnect();
+  }, []);
+}
+
+function useCountdown() {
+  const [t, setT] = useState<string | null>(null);
+  useEffect(() => {
+    const tick = () => {
+      const now = new Date();
+      const end = new Date(now);
+      end.setHours(23, 59, 59, 999);
+      let s = Math.max(0, Math.floor((end.getTime() - now.getTime()) / 1000));
+      const h = String(Math.floor(s / 3600)).padStart(2, "0");
+      s %= 3600;
+      const m = String(Math.floor(s / 60)).padStart(2, "0");
+      const sec = String(s % 60).padStart(2, "0");
+      setT(`${h}:${m}:${sec}`);
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+  return t;
+}
+
+/* =================================================================== */
+export default function Page() {
+  useReveal();
+  const countdown = useCountdown();
+  const [open, setOpen] = useState<number | null>(0);
+  const [barShow, setBarShow] = useState(false);
+  const heroRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onScroll = () => setBarShow(window.scrollY > 620);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <>
+      {/* ANNOUNCEMENT */}
+      <div className="topbar">
+        <span className="dot" />
+        <span>
+          Launch offer · <b>{PRICE.discountPct}% off</b> ends in{" "}
+          <b suppressHydrationWarning>{countdown ?? "23:59:59"}</b>
+        </span>
+      </div>
+
+      {/* HEADER */}
+      <header className="head">
+        <div className="wrap row">
+          <div className="brand">
+            <span className="seal-sm"><Seal size={30} onDark={false} /></span>
+            Airport Patricia
+          </div>
+          <a href={STRIPE_BUY_URL} target="_blank" rel="noopener noreferrer" className="hbtn">
+            Get the book <span className="price">{PRICE.currency}{PRICE.current}</span>
+          </a>
+        </div>
+      </header>
+
+      {/* HERO */}
+      <section className="hero section" ref={heroRef}>
+        <div className="wrap grid">
+          <div>
+            <div className="stars reveal in">
+              <span className="s">★★★★★</span>
+              <span>{PRODUCT.rating} from {PRODUCT.reviews.toLocaleString()} travelers</span>
+            </div>
+            <h1 className="reveal in">
+              The travel money you&rsquo;re losing <span className="em-brass">without even knowing it.</span>
+            </h1>
+            <p className="lede reveal in">
+              Twenty years at the checkpoint, written down. Ten hacks the airlines and airports
+              quietly count on you <b>never figuring out</b>.
+            </p>
+
+            <div className="pricebar reveal in">
+              <span className="now"><sup>{PRICE.currency}</sup>{PRICE.current}</span>
+              <span className="was">{PRICE.currency}{PRICE.anchor}</span>
+              <span className="off">{PRICE.discountPct}% off today</span>
+            </div>
+
+            <div className="ctarow reveal in">
+              <Buy className="btn-lg" sub="Instant PDF · read it in 20 minutes">Get instant access</Buy>
+            </div>
+
+            <div className="trust reveal in">
+              <span><Check /> Instant download</span>
+              <span><Check /> 30-day guarantee</span>
+              <span><Check /> Secure checkout</span>
+            </div>
+          </div>
+
+          <div className="art reveal in">
+            <img className="photo" src="/img/patricia-book-hero.jpg" alt="Patricia holding her Top 10 Travel Hacks book at the airport checkpoint" />
+            <div className="seal-float"><Seal size={78} onDark /></div>
+            <div className="tag">
+              <span className="big">{PRODUCT.pages}</span>
+              <span className="lbl">pages of<br />insider hacks</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* PROOF STRIP */}
+      <section className="proof section" style={{ paddingBlock: "2.2rem" }}>
+        <div className="wrap">
+          <div className="row reveal" style={{ display: "flex", justifyContent: "center", gap: "clamp(1.5rem,6vw,4.5rem)", flexWrap: "wrap", width: "100%" }}>
+            <div className="stat"><div className="n">{PRODUCT.travelers}</div><div className="l">Travelers helped</div></div>
+            <div className="stat"><div className="n">20 yrs</div><div className="l">At the checkpoint</div></div>
+            <div className="stat"><div className="n">★ {PRODUCT.rating}</div><div className="l">Average rating</div></div>
+            <div className="stat"><div className="n">{PRICE.currency}{PRICE.current}</div><div className="l">One-time, no subscription</div></div>
+          </div>
+        </div>
+      </section>
+
+      {/* PROBLEM */}
+      <section className="section">
+        <div className="wrap">
+          <div className="shead reveal">
+            <span className="kicker">The quiet tax on every trip</span>
+            <h2>You&rsquo;re paying more than you have to, every single flight.</h2>
+            <p>Not because you&rsquo;re careless. Because the whole system is built so you don&rsquo;t notice.</p>
+          </div>
+          <div className="pains">
+            {[
+              ["The price drops after you buy", "Fares and rooms move all day. When yours drops, the airline just keeps the difference."],
+              ["You take the voucher", "When a flight is cancelled, most people accept credit when they&rsquo;re owed cash back."],
+              ["You buy coverage twice", "The trip and bag protection already in your wallet sits unused while you pay for more."],
+              ["You overpay at every step", "Bag fees, seat fees, seven-dollar water. Small leaks that add up to real money."],
+            ].map(([t, d], i) => (
+              <div className="pain reveal" key={i} style={{ transitionDelay: `${i * 60}ms` }}>
+                <span className="x">✕</span>
+                <p><b>{t}.</b> <span dangerouslySetInnerHTML={{ __html: d }} /></p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* MEET PATRICIA */}
+      <section className="meet section deep">
+        <div className="wrap grid">
+          <img className="photo reveal" src="/img/patricia-authority.jpg" alt="Patricia Simmons, airport security officer of twenty years" />
+          <div className="reveal">
+            <span className="kicker" style={{ color: "var(--brass-bright)" }}>Meet your guide</span>
+            <blockquote style={{ marginTop: "1rem" }}>
+              &ldquo;I&rsquo;ve watched a few million people travel the hard way. I&rsquo;m finally
+              writing down what I&rsquo;d tell my own niece before she flies.&rdquo;
+            </blockquote>
+            <div className="who">
+              <b>Patricia Simmons</b>
+              <span>Airport Security Officer · 20 years</span>
+            </div>
+            <div className="creds">
+              <div><div className="n">20</div><div className="l">Years on the job</div></div>
+              <div><div className="n">Millions</div><div className="l">Of travelers watched</div></div>
+              <div><div className="n">Zero</div><div className="l">Fluff or filler</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* WHAT'S INSIDE */}
+      <section className="section">
+        <div className="wrap">
+          <div className="shead reveal">
+            <span className="kicker">What&rsquo;s inside</span>
+            <h2>Ten hacks. Every one of them pays for the book.</h2>
+            <p>No vague advice you could get anywhere. The specific moves that keep money in your pocket.</p>
+          </div>
+          <div className="hacks">
+            {HACKS.map((h, i) => (
+              <div className="hcard reveal" key={h.n} style={{ transitionDelay: `${(i % 2) * 70}ms` }}>
+                <span className="n">{h.n}</span>
+                <div>
+                  <h3>{h.t}</h3>
+                  <p>{h.d}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="bonus reveal">
+            <span className="badge">Free bonus</span>
+            <p><b>The Pre-Flight Checklist.</b> Every hack distilled into a one-page tear-out you save to your phone and run before each trip.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* BOOK PREVIEW */}
+      <section className="preview section deep">
+        <div className="wrap">
+          <div className="shead reveal">
+            <span className="kicker" style={{ color: "var(--brass-bright)" }}>A real look inside</span>
+            <h2>Beautifully made. Built to actually use.</h2>
+          </div>
+          <div className="stage reveal">
+            <img className="pg tilt-l" src="/img/page-contents-04.png" alt="Contents page" />
+            <img className="pg lead" src="/img/cover-flat.jpg" alt="Book cover" />
+            <img className="pg tilt-r" src="/img/page-checklist-18.png" alt="Pre-flight checklist page" />
+          </div>
+        </div>
+      </section>
+
+      {/* OFFER / VALUE STACK */}
+      <section className="section">
+        <div className="wrap">
+          <div className="shead reveal">
+            <span className="kicker">The offer</span>
+            <h2>Everything you get today</h2>
+          </div>
+          <div className="offer reveal">
+            <div className="top">
+              <span className="kicker">Patricia&rsquo;s Top 10 Travel Hacks</span>
+              <h3>The complete guide</h3>
+            </div>
+            <div className="body">
+              <div className="line"><span><span className="check"><Check /></span> The full 20-page guide (10 hacks)</span><span className="v">{PRICE.currency}19</span></div>
+              <div className="line"><span><span className="check"><Check /></span> The Pre-Flight Checklist tear-out</span><span className="v">{PRICE.currency}9</span></div>
+              <div className="line"><span><span className="check"><Check /></span> Free future updates, forever</span><span className="v">Included</span></div>
+              <div className="line"><span><span className="check"><Check /></span> Instant delivery, no subscription</span><span className="v">Included</span></div>
+              <div className="total">
+                <span className="lbl">Today&rsquo;s price</span>
+                <span className="amt"><span className="was">{PRICE.currency}28</span><span className="now">{PRICE.currency}{PRICE.current}</span></span>
+              </div>
+              <div className="cta"><Buy className="btn-block btn-lg" sub="Secure checkout · instant access">Get the book now</Buy></div>
+              <p className="micro">One-time payment · Backed by our 30-day guarantee</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section className="section" style={{ background: "var(--cream-2)" }}>
+        <div className="wrap">
+          <div className="shead reveal">
+            <span className="kicker">Real travelers</span>
+            <h2>It pays for itself on the next trip.</h2>
+          </div>
+          <div className="tcards">
+            {TESTIMONIALS.map((t, i) => (
+              <div className="tcard reveal" key={i} style={{ transitionDelay: `${(i % 2) * 70}ms` }}>
+                <div className="s">{"★".repeat(t.stars)}</div>
+                <p>&ldquo;{t.text}&rdquo;</p>
+                <div className="who"><b>{t.name}</b> <span>· {t.tag}</span></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* GUARANTEE */}
+      <section className="section deep">
+        <div className="wrap guarantee reveal">
+          <div className="seal-g"><Seal size={110} onDark /></div>
+          <span className="kicker" style={{ color: "var(--brass-bright)" }}>Risk-free</span>
+          <h2 style={{ marginTop: "0.6rem" }}>Try it for 30 days.</h2>
+          <p>
+            Read every page, use the hacks on your next trip, and see the savings for yourself.
+            If the guide genuinely doesn&rsquo;t deliver, our 30-day satisfaction guarantee has you covered.
+          </p>
+          <p className="fine">
+            Guarantee terms: refund requests must be submitted in writing within 30 days of purchase to our support address,
+            and must include your order number, proof of purchase, and a detailed written explanation of the specific hacks
+            you applied and the documented outcomes demonstrating the guide did not perform as described. Because this is a
+            digital product delivered in full at the time of purchase, requests that do not include the required documentation,
+            requests citing change of mind, accidental purchase, or failure to apply the material, and requests submitted after
+            the 30-day window or following any redistribution of the file, are not eligible. Approved refunds are issued to the
+            original payment method only and may take up to 30 business days to process. Submitting a request does not guarantee approval.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* FAQ */}
+      <section className="section">
+        <div className="wrap">
+          <div className="shead reveal">
+            <span className="kicker">Questions</span>
+            <h2>Before you grab it</h2>
+          </div>
+          <div className="faq reveal">
+            {FAQ.map((f, i) => (
+              <div className="qa" key={i} data-open={open === i}>
+                <button onClick={() => setOpen(open === i ? null : i)} aria-expanded={open === i}>
+                  {f.q}<span className="ic">+</span>
+                </button>
+                <div className="ans"><div><p>{f.a}</p></div></div>
+              </div>
+            ))}
+          </div>
         </div>
-      </main>
-    </div>
+      </section>
+
+      {/* FINAL CTA */}
+      <section className="final section dark">
+        <div className="wrap reveal">
+          <span className="kicker" style={{ color: "var(--brass-bright)" }}>Last call</span>
+          <h2 style={{ marginTop: "0.8rem" }}>Stop leaving your money at the airport.</h2>
+          <p className="lede">
+            Twenty years of insider hacks, yours in the next two minutes. One smart move on your
+            next trip and this pays for itself many times over.
+          </p>
+          <div className="pricebar">
+            <span className="now"><sup>{PRICE.currency}</sup>{PRICE.current}</span>
+            <span className="was">{PRICE.currency}{PRICE.anchor}</span>
+            <span className="off">{PRICE.discountPct}% off today</span>
+          </div>
+          <div className="cta"><Buy className="btn-lg" sub="Instant PDF · 30-day guarantee">Get instant access</Buy></div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="foot">
+        <div className="wrap">
+          <div className="row">
+            <div className="brand" style={{ color: "rgba(255,255,255,0.8)" }}>
+              <span className="seal-sm"><Seal size={28} onDark /></span> Airport Patricia
+            </div>
+            <div className="links">
+              <a href="#">Contact</a>
+              <a href="#">Terms</a>
+              <a href="#">Privacy</a>
+              <a href="#">Refunds</a>
+            </div>
+          </div>
+          <div className="fine">
+            © {new Date().getFullYear()} Airport Patricia. All rights reserved. &ldquo;Patricia Simmons&rdquo; is a travel-education
+            persona. This guide provides general travel and money-saving information for educational purposes only and is not
+            financial, legal, or travel-agency advice; results vary by traveler, route, fare type, and timing, and no specific
+            savings are guaranteed. Airline, hotel, and credit-card policies change and are outside our control. Not affiliated
+            with, endorsed by, or sponsored by any airline, airport, hotel, the TSA, or any government agency. By purchasing you
+            agree to our Terms and the guarantee conditions stated above.
+          </div>
+        </div>
+      </footer>
+
+      {/* STICKY MOBILE BUY BAR */}
+      <div className={`buybar ${barShow ? "show" : ""}`}>
+        <div className="px">
+          <div className="l">{PRICE.discountPct}% off today</div>
+          <span className="now">{PRICE.currency}{PRICE.current}</span>
+          <span className="was">{PRICE.currency}{PRICE.anchor}</span>
+        </div>
+        <a href={STRIPE_BUY_URL} target="_blank" rel="noopener noreferrer" className="btn btn-shine">Get the book</a>
+      </div>
+    </>
   );
 }
