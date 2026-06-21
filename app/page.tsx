@@ -196,7 +196,7 @@ export default function Page() {
             </h1>
             <p className="lede reveal in">
               Twenty years at the checkpoint taught me exactly where your money leaks. These are the
-              10 hacks I&rsquo;d give my own niece. The ones airlines and hotels <b>hope you never figure out</b>.
+              10 insider plays I&rsquo;d give my own niece. The ones airlines and hotels <b>hope you never figure out</b>.
             </p>
 
             <div className="hchips reveal in">
@@ -223,11 +223,11 @@ export default function Page() {
           </div>
 
           <div className="art reveal in">
-            <img className="photo" src="/img/patricia-book-hero.jpg" alt="Patricia holding her Top 10 Travel Hacks book at the airport checkpoint" />
+            <img className="photo" src="/img/patricia-book-hero.jpg" alt="Patricia holding her Insider Travel Playbook at the airport checkpoint" />
             <div className="seal-float"><Seal size={78} onDark /></div>
             <div className="tag">
               <span className="big">{PRODUCT.pages}</span>
-              <span className="lbl">pages of<br />insider hacks</span>
+              <span className="lbl">pages of<br />insider plays</span>
             </div>
           </div>
         </div>
@@ -305,7 +305,7 @@ export default function Page() {
         <div className="wrap">
           <div className="shead reveal">
             <span className="kicker">What&rsquo;s inside</span>
-            <h2>Ten hacks across three parts of every trip.</h2>
+            <h2>Ten insider plays across three parts of every trip.</h2>
             <p>No vague advice you could get anywhere. The specific moves that keep money in your pocket, written out step by step.</p>
           </div>
           <div className="buckets">
@@ -321,7 +321,7 @@ export default function Page() {
           <p className="locknote reveal">The full ten, with the exact step-by-step on each, are waiting inside the guide.</p>
           <div className="bonus reveal">
             <span className="badge">Free bonus</span>
-            <p><b>The Pre-Flight Checklist.</b> Every hack distilled into a one-page tear-out you save to your phone and run before each trip.</p>
+            <p><b>The Pre-Flight Checklist.</b> Every play distilled into a one-page tear-out you save to your phone and run before each trip.</p>
           </div>
         </div>
       </section>
@@ -350,11 +350,11 @@ export default function Page() {
           </div>
           <div className="offer reveal">
             <div className="top">
-              <span className="kicker">Patricia&rsquo;s Top 10 Travel Hacks</span>
+              <span className="kicker">Patricia&rsquo;s Insider Travel Playbook</span>
               <h3>The complete guide</h3>
             </div>
             <div className="body">
-              <div className="line"><span><span className="check"><Check /></span> The full 20-page guide (10 hacks)</span><span className="v">{PRICE.currency}19</span></div>
+              <div className="line"><span><span className="check"><Check /></span> The full 20-page guide (10 insider plays)</span><span className="v">{PRICE.currency}19</span></div>
               <div className="line"><span><span className="check"><Check /></span> The Pre-Flight Checklist tear-out</span><span className="v">{PRICE.currency}9</span></div>
               <div className="line"><span><span className="check"><Check /></span> Free future updates, forever</span><span className="v">Included</span></div>
               <div className="line"><span><span className="check"><Check /></span> Instant delivery, no subscription</span><span className="v">Included</span></div>
@@ -395,13 +395,13 @@ export default function Page() {
           <span className="kicker" style={{ color: "var(--brass-bright)" }}>Risk-free</span>
           <h2 style={{ marginTop: "0.6rem" }}>Try it for 30 days.</h2>
           <p>
-            Read every page, use the hacks on your next trip, and see the savings for yourself.
+            Read every page, use the plays on your next trip, and see the savings for yourself.
             If the guide genuinely doesn&rsquo;t deliver, our 30-day satisfaction guarantee has you covered.
           </p>
           <p className="fine">
             Guarantee terms: refund requests must be submitted in writing within 30 days of purchase to our support address,
-            and must include your order number, proof of purchase, and a detailed written explanation of the specific hacks
-            you applied and the documented outcomes demonstrating the guide did not perform as described. Because this is a
+            and must include your order number, proof of purchase, and a detailed written explanation of the specific plays
+            you applied and the documented outcomes demonstrating the playbook did not perform as described. Because this is a
             digital product delivered in full at the time of purchase, requests that do not include the required documentation,
             requests citing change of mind, accidental purchase, or failure to apply the material, and requests submitted after
             the 30-day window or following any redistribution of the file, are not eligible. Approved refunds are issued to the
@@ -436,7 +436,7 @@ export default function Page() {
           <span className="kicker" style={{ color: "var(--brass-bright)" }}>Last call</span>
           <h2 style={{ marginTop: "0.8rem" }}>Stop leaving your money at the airport.</h2>
           <p className="lede">
-            Twenty years of insider hacks, yours in the next two minutes. One smart move on your
+            Twenty years of insider plays, yours in the next two minutes. One smart move on your
             next trip and this pays for itself many times over.
           </p>
           <div className="pricebar">

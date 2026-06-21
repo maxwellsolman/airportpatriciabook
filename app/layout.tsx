@@ -25,11 +25,11 @@ const archivo = Archivo({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://airportpatriciabook.vercel.app"),
-  title: "Airport Patricia's Top 10 Travel Hacks · Stop Leaving Money at the Airport",
+  title: "Patricia's Insider Travel Playbook · Stop Leaving Money at the Airport",
   description:
-    "Twenty years at the checkpoint, written down. Ten hacks the airlines and airports hope you never figure out. Instant PDF, $9.99 today.",
+    "Twenty years at the checkpoint, written down. Ten insider plays the airlines and airports hope you never learn. Instant PDF, $9.99 today.",
   openGraph: {
-    title: "Patricia's Top 10 Travel Hacks",
+    title: "Patricia's Insider Travel Playbook",
     description:
       "Twenty years at the checkpoint, written down. The stuff they hope you never figure out.",
     images: ["/img/patricia-book-hero.jpg"],
