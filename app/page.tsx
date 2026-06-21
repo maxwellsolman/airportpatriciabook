@@ -49,6 +49,51 @@ function Buy({ children, className = "", sub }: { children: React.ReactNode; cla
   );
 }
 
+function CountUp({ to, prefix = "", suffix = "", decimals = 0, plus = false }: { to: number; prefix?: string; suffix?: string; decimals?: number; plus?: boolean }) {
+  const [v, setV] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const done = useRef(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting && !done.current) {
+            done.current = true;
+            const dur = 1500;
+            const t0 = performance.now();
+            const tick = (now: number) => {
+              const p = Math.min(1, (now - t0) / dur);
+              const eased = 1 - Math.pow(1 - p, 3);
+              setV(to * eased);
+              if (p < 1) requestAnimationFrame(tick);
+              else setV(to);
+            };
+            requestAnimationFrame(tick);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [to]);
+  const display = decimals ? v.toFixed(decimals) : Math.round(v).toLocaleString();
+  return <span ref={ref} suppressHydrationWarning>{prefix}{display}{plus ? "+" : ""}{suffix}</span>;
+}
+
+const MARQUEE_ITEMS = [
+  "Catch price drops after you book",
+  "Claim the refunds you're owed",
+  "Skip the junk bag fees",
+  "Free seats & upgrades",
+  "Lounge access without status",
+  "Beat the airport markup",
+  "Book at the right time",
+  "Search smarter, pay less",
+];
+
 /* ---------- hooks ---------- */
 function useReveal() {
   useEffect(() => {
@@ -135,6 +180,8 @@ export default function Page() {
 
       {/* HERO */}
       <section className="hero section" ref={heroRef}>
+        <div className="aurora a1" />
+        <div className="aurora a2" />
         <div className="wrap grid">
           <div>
             <div className="stars reveal in">
@@ -142,12 +189,18 @@ export default function Page() {
               <span>{PRODUCT.rating} from {PRODUCT.reviews.toLocaleString()} travelers</span>
             </div>
             <h1 className="reveal in">
-              The travel money you&rsquo;re losing <span className="em-brass">without even knowing it.</span>
+              You&rsquo;re losing hundreds at the airport <span className="em-brass">&mdash; without even knowing it.</span>
             </h1>
             <p className="lede reveal in">
-              Twenty years at the checkpoint, written down. Ten hacks the airlines and airports
-              quietly count on you <b>never figuring out</b>.
+              Twenty years at the checkpoint taught me exactly where your money leaks. These are the
+              10 hacks I&rsquo;d give my own niece &mdash; the ones airlines and hotels <b>hope you never figure out</b>.
             </p>
+
+            <div className="hchips reveal in">
+              <span className="chip"><span className="d" /> Catch price drops</span>
+              <span className="chip"><span className="d" /> Claim refunds you&rsquo;re owed</span>
+              <span className="chip"><span className="d" /> Skip junk fees</span>
+            </div>
 
             <div className="pricebar reveal in">
               <span className="now"><sup>{PRICE.currency}</sup>{PRICE.current}</span>
@@ -156,7 +209,7 @@ export default function Page() {
             </div>
 
             <div className="ctarow reveal in">
-              <Buy className="btn-lg" sub="Instant PDF · read it in 20 minutes">Get instant access</Buy>
+              <Buy className="btn-lg btn-glow" sub="Instant PDF · read it in 20 minutes">Get instant access</Buy>
             </div>
 
             <div className="trust reveal in">
@@ -177,14 +230,22 @@ export default function Page() {
         </div>
       </section>
 
+      {/* BENEFITS MARQUEE */}
+      <div className="marquee" aria-hidden="true">
+        <div className="track">
+          <div className="seq">{MARQUEE_ITEMS.map((m, i) => <span key={i}>{m}</span>)}</div>
+          <div className="seq">{MARQUEE_ITEMS.map((m, i) => <span key={`b${i}`}>{m}</span>)}</div>
+        </div>
+      </div>
+
       {/* PROOF STRIP */}
-      <section className="proof section" style={{ paddingBlock: "2.2rem" }}>
+      <section className="proof section" style={{ paddingBlock: "2.4rem" }}>
         <div className="wrap">
           <div className="row reveal" style={{ display: "flex", justifyContent: "center", gap: "clamp(1.5rem,6vw,4.5rem)", flexWrap: "wrap", width: "100%" }}>
-            <div className="stat"><div className="n">{PRODUCT.travelers}</div><div className="l">Travelers helped</div></div>
-            <div className="stat"><div className="n">20 yrs</div><div className="l">At the checkpoint</div></div>
-            <div className="stat"><div className="n">★ {PRODUCT.rating}</div><div className="l">Average rating</div></div>
-            <div className="stat"><div className="n">{PRICE.currency}{PRICE.current}</div><div className="l">One-time, no subscription</div></div>
+            <div className="stat"><div className="n"><CountUp to={2000} plus /></div><div className="l">Travelers helped</div></div>
+            <div className="stat"><div className="n"><CountUp to={20} suffix=" yrs" /></div><div className="l">At the checkpoint</div></div>
+            <div className="stat"><div className="n">★ <CountUp to={4.9} decimals={1} /></div><div className="l">Average rating</div></div>
+            <div className="stat"><div className="n"><CountUp to={9.99} prefix="$" decimals={2} /></div><div className="l">One-time, no subscription</div></div>
           </div>
         </div>
       </section>
@@ -298,7 +359,7 @@ export default function Page() {
                 <span className="lbl">Today&rsquo;s price</span>
                 <span className="amt"><span className="was">{PRICE.currency}28</span><span className="now">{PRICE.currency}{PRICE.current}</span></span>
               </div>
-              <div className="cta"><Buy className="btn-block btn-lg" sub="Secure checkout · instant access">Get the book now</Buy></div>
+              <div className="cta"><Buy className="btn-block btn-lg btn-glow" sub="Secure checkout · instant access">Get the book now</Buy></div>
               <p className="micro">One-time payment · Backed by our 30-day guarantee</p>
             </div>
           </div>
@@ -380,7 +441,7 @@ export default function Page() {
             <span className="was">{PRICE.currency}{PRICE.anchor}</span>
             <span className="off">{PRICE.discountPct}% off today</span>
           </div>
-          <div className="cta"><Buy className="btn-lg" sub="Instant PDF · 30-day guarantee">Get instant access</Buy></div>
+          <div className="cta"><Buy className="btn-lg btn-glow" sub="Instant PDF · 30-day guarantee">Get instant access</Buy></div>
         </div>
       </section>
 
