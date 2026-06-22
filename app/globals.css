@@ -119,6 +119,9 @@ h1,h2,h3{ font-family:var(--font-display); font-weight:560; line-height:1.02; le
 .hero .stars{ display:flex; align-items:center; gap:0.5rem; font-family:var(--font-ui); font-size:0.82rem; color:var(--ink-soft); margin-bottom:1.1rem; }
 .hero .stars .s{ color:var(--brass); letter-spacing:1px; font-size:0.95rem; }
 
+/* product eyebrow above the hero headline */
+.hero .hero-kick{ display:inline-block; font-family:var(--font-ui); font-weight:700; text-transform:uppercase; letter-spacing:0.22em; font-size:0.72rem; color:var(--brass-deep); margin-bottom:0.9rem; }
+
 /* top-of-hero social proof row */
 .hero .herotrust{ display:flex; align-items:center; flex-wrap:wrap; gap:0.6rem 0.85rem; font-family:var(--font-ui); font-size:0.84rem; color:var(--ink-soft); margin-bottom:1.2rem; }
 .hero .herotrust b{ color:var(--ink); font-weight:700; }

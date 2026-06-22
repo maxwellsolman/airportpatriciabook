@@ -184,6 +184,7 @@ export default function Page() {
         <div className="aurora a2" />
         <div className="wrap grid">
           <div>
+            <span className="hero-kick">The Insider Travel Playbook</span>
             <div className="herotrust reveal in">
               <span className="rate"><span className="s">★★★★★</span> {PRODUCT.rating}</span>
               <span className="sep" />
@@ -192,11 +193,12 @@ export default function Page() {
               <span><b>20 yrs</b> at the checkpoint</span>
             </div>
             <h1 className="reveal in">
-              You&rsquo;re losing hundreds at the airport <span className="em-brass">without even knowing it.</span>
+              The money-saving travel guide <span className="em-brass">the airlines hope you never read.</span>
             </h1>
             <p className="lede reveal in">
-              Twenty years at the checkpoint taught me exactly where your money leaks. These are the
-              10 insider plays I&rsquo;d give my own niece. The ones airlines and hotels <b>hope you never figure out</b>.
+              I&rsquo;m Patricia, and twenty years at the airport checkpoint showed me exactly where travelers
+              overpay. My Insider Travel Playbook hands you <b>10 simple plays to save money</b> on flights and
+              hotels, the same ones I&rsquo;d give my own niece before she flies.
             </p>
 
             <div className="hchips reveal in">
