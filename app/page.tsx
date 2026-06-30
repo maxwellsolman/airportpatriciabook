@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { track } from "@vercel/analytics";
 import { STRIPE_BUY_URL, PRICE, PRODUCT, SECTIONS, FAQ, TESTIMONIALS } from "@/lib/config";
 
 /* ---------- tiny presentational helpers ---------- */
@@ -38,9 +39,15 @@ const Check = () => (
   </svg>
 );
 
-function Buy({ children, className = "", sub }: { children: React.ReactNode; className?: string; sub?: string }) {
+function Buy({ children, className = "", sub, where = "body" }: { children: React.ReactNode; className?: string; sub?: string; where?: string }) {
   return (
-    <a href={STRIPE_BUY_URL} target="_blank" rel="noopener noreferrer" className={`btn btn-shine ${className}`}>
+    <a
+      href={STRIPE_BUY_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`btn btn-shine ${className}`}
+      onClick={() => track("checkout_click", { where })}
+    >
       <span style={{ display: "flex", flexDirection: "column", alignItems: "center", lineHeight: 1.15 }}>
         <span>{children}</span>
         {sub ? <span className="sub">{sub}</span> : null}
@@ -172,7 +179,7 @@ export default function Page() {
             <span className="seal-sm"><Seal size={30} onDark={false} /></span>
             Airport Patricia
           </div>
-          <a href={STRIPE_BUY_URL} target="_blank" rel="noopener noreferrer" className="hbtn">
+          <a href={STRIPE_BUY_URL} target="_blank" rel="noopener noreferrer" className="hbtn" onClick={() => track("checkout_click", { where: "header" })}>
             Get the book <span className="price">{PRICE.currency}{PRICE.current}</span>
           </a>
         </div>
@@ -482,7 +489,7 @@ export default function Page() {
           <span className="now">{PRICE.currency}{PRICE.current}</span>
           <span className="was">{PRICE.currency}{PRICE.anchor}</span>
         </div>
-        <a href={STRIPE_BUY_URL} target="_blank" rel="noopener noreferrer" className="btn btn-shine">Get the book</a>
+        <a href={STRIPE_BUY_URL} target="_blank" rel="noopener noreferrer" className="btn btn-shine" onClick={() => track("checkout_click", { where: "stickybar" })}>Get the book</a>
       </div>
     </>
   );

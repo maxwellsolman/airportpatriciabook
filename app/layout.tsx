@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Newsreader, Archivo } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -46,7 +47,10 @@ export default function RootLayout({
       lang="en"
       className={`${fraunces.variable} ${newsreader.variable} ${archivo.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
