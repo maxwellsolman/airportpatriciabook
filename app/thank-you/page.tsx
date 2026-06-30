@@ -85,7 +85,7 @@ export default function ThankYou() {
           }}
         >
           Thank you for grabbing <b style={{ color: "var(--ink)" }}>{PRODUCT.name}</b>.
-          All {PRODUCT.pages} pages, plus the Pre-Flight Checklist tear-out, are yours below.
+          {` All ${PRODUCT.pages} pages, plus the Pre-Flight Checklist tear-out, are yours below. `}
           Save it to your phone so it&rsquo;s with you on every trip.
         </p>
 
