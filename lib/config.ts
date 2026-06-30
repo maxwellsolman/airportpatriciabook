@@ -5,7 +5,7 @@
 // ===================================================================
 
 export const STRIPE_BUY_URL =
-  "https://buy.stripe.com/test_PLACEHOLDER_REPLACE_ME"; // <-- replace with your Stripe Payment Link
+  "https://buy.stripe.com/6oUdRa0eOd9Lfws6C43oA00"; // live Stripe Payment Link
 
 export const PRICE = {
   current: "9.99",
