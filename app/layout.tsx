@@ -27,11 +27,11 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://airportpatriciabook.vercel.app"),
   title: "Patricia's Insider Travel Playbook · Stop Leaving Money at the Airport",
   description:
-    "Twenty years at the checkpoint, written down. Ten insider plays the airlines and airports hope you never learn. Instant PDF, $9.99 today.",
+    "Twenty years in travel, written down. Ten insider plays the airlines and airports hope you never learn. Instant PDF, $9.99 today.",
   openGraph: {
     title: "Patricia's Insider Travel Playbook",
     description:
-      "Twenty years at the checkpoint, written down. The stuff they hope you never figure out.",
+      "Twenty years in travel, written down. The stuff they hope you never figure out.",
     images: ["/img/patricia-book-hero.jpg"],
     type: "website",
   },

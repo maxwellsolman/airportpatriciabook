@@ -28,7 +28,7 @@ export const PRODUCT = {
 export const SECTIONS = [
   { n: "01", t: "After You Book", count: "4 plays", d: "The quiet moves that claw money back after you've already paid. Most travelers never know they're owed it." },
   { n: "02", t: "Booking Smart", count: "3 plays", d: "When and how to book so you start a trip ahead instead of behind. The timing nobody actually explains." },
-  { n: "03", t: "At The Airport", count: "3 plays", d: "Everything from my side of the checkpoint that saves you time, stress, and cash on the day you fly." },
+  { n: "03", t: "At The Airport", count: "3 plays", d: "Everything from my years in travel that saves you time, stress, and cash on the day you fly." },
 ];
 
 export const FAQ = [

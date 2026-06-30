@@ -20,7 +20,7 @@ function Seal({ size = 96, onDark = true }: { size?: number; onDark?: boolean })
         </defs>
         <text fontFamily="var(--font-ui)" fontSize="6.3" letterSpacing="2" fill={txt} fontWeight="700">
           <textPath href="#sealpath" startOffset="1%">
-            TWENTY YEARS · AT THE CHECKPOINT ·
+            TWENTY YEARS · IN TRAVEL ·
           </textPath>
         </text>
       </svg>
@@ -190,13 +190,13 @@ export default function Page() {
               <span className="sep" />
               <span><b>{PRODUCT.travelers}</b> travelers helped</span>
               <span className="sep" />
-              <span><b>20 yrs</b> at the checkpoint</span>
+              <span><b>20 yrs</b> in travel</span>
             </div>
             <h1 className="reveal in">
               The money-saving travel guide <span className="em-brass">the airlines hope you never read.</span>
             </h1>
             <p className="lede reveal in">
-              I&rsquo;m Patricia, and twenty years at the airport checkpoint showed me exactly where travelers
+              I&rsquo;m Patricia, and twenty years working in travel showed me exactly where travelers
               overpay. My Insider Travel Playbook hands you <b>10 simple plays to save money</b> on flights and
               hotels, the same ones I&rsquo;d give my own niece before she flies.
             </p>
@@ -225,7 +225,7 @@ export default function Page() {
           </div>
 
           <div className="art reveal in">
-            <img className="photo" src="/img/patricia-book-hero.jpg" alt="Patricia holding her Insider Travel Playbook at the airport checkpoint" />
+            <img className="photo" src="/img/patricia-book-hero.jpg" alt="Patricia holding her Insider Travel Playbook at the airport" />
             <div className="seal-float"><Seal size={78} onDark /></div>
             <div className="tag">
               <span className="big">{PRODUCT.pages}</span>
@@ -248,7 +248,7 @@ export default function Page() {
         <div className="wrap">
           <div className="row reveal" style={{ display: "flex", justifyContent: "center", gap: "clamp(1.5rem,6vw,4.5rem)", flexWrap: "wrap", width: "100%" }}>
             <div className="stat"><div className="n"><CountUp to={2000} plus /></div><div className="l">Travelers helped</div></div>
-            <div className="stat"><div className="n"><CountUp to={20} suffix=" yrs" /></div><div className="l">At the checkpoint</div></div>
+            <div className="stat"><div className="n"><CountUp to={20} suffix=" yrs" /></div><div className="l">Working in travel</div></div>
             <div className="stat"><div className="n">★ <CountUp to={4.98} decimals={2} /></div><div className="l">Average rating</div></div>
             <div className="stat"><div className="n"><CountUp to={9.99} prefix="$" decimals={2} /></div><div className="l">One-time, no subscription</div></div>
           </div>
@@ -282,7 +282,7 @@ export default function Page() {
       {/* MEET PATRICIA */}
       <section className="meet section deep">
         <div className="wrap grid">
-          <img className="photo reveal" src="/img/patricia-authority.jpg" alt="Patricia Simmons, airport security officer of twenty years" />
+          <img className="photo reveal" src="/img/patricia-authority.jpg" alt="Patricia Simmons, travel insider of twenty years" />
           <div className="reveal">
             <span className="kicker" style={{ color: "var(--brass-bright)" }}>Meet your guide</span>
             <blockquote style={{ marginTop: "1rem" }}>
@@ -291,11 +291,11 @@ export default function Page() {
             </blockquote>
             <div className="who">
               <b>Patricia Simmons</b>
-              <span>Airport Security Officer · 20 years</span>
+              <span>Travel Insider · 20 years</span>
             </div>
             <div className="creds">
-              <div><div className="n">20</div><div className="l">Years on the job</div></div>
-              <div><div className="n">Millions</div><div className="l">Of travelers watched</div></div>
+              <div><div className="n">20</div><div className="l">Years in travel</div></div>
+              <div><div className="n">Millions</div><div className="l">Of travelers helped</div></div>
               <div><div className="n">Zero</div><div className="l">Fluff or filler</div></div>
             </div>
           </div>
