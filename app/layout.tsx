@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Newsreader, Archivo } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import PostHogInit from "./PostHogInit";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -48,6 +49,7 @@ export default function RootLayout({
       className={`${fraunces.variable} ${newsreader.variable} ${archivo.variable}`}
     >
       <body>
+        <PostHogInit />
         {children}
         <Analytics />
       </body>

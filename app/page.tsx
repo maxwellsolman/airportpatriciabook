@@ -2,7 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
+import { phCapture } from "./PostHogInit";
 import { STRIPE_BUY_URL, PRICE, PRODUCT, SECTIONS, FAQ, TESTIMONIALS } from "@/lib/config";
+
+function checkout(where: string) {
+  track("checkout_click", { where });
+  phCapture("checkout_click", { where });
+}
 
 /* ---------- tiny presentational helpers ---------- */
 function Seal({ size = 96, onDark = true }: { size?: number; onDark?: boolean }) {
@@ -46,7 +52,7 @@ function Buy({ children, className = "", sub, where = "body" }: { children: Reac
       target="_blank"
       rel="noopener noreferrer"
       className={`btn btn-shine ${className}`}
-      onClick={() => track("checkout_click", { where })}
+      onClick={() => checkout(where)}
     >
       <span style={{ display: "flex", flexDirection: "column", alignItems: "center", lineHeight: 1.15 }}>
         <span>{children}</span>
@@ -179,7 +185,7 @@ export default function Page() {
             <span className="seal-sm"><Seal size={30} onDark={false} /></span>
             Airport Patricia
           </div>
-          <a href={STRIPE_BUY_URL} target="_blank" rel="noopener noreferrer" className="hbtn" onClick={() => track("checkout_click", { where: "header" })}>
+          <a href={STRIPE_BUY_URL} target="_blank" rel="noopener noreferrer" className="hbtn" onClick={() => checkout("header")}>
             Get the book <span className="price">{PRICE.currency}{PRICE.current}</span>
           </a>
         </div>
@@ -489,7 +495,7 @@ export default function Page() {
           <span className="now">{PRICE.currency}{PRICE.current}</span>
           <span className="was">{PRICE.currency}{PRICE.anchor}</span>
         </div>
-        <a href={STRIPE_BUY_URL} target="_blank" rel="noopener noreferrer" className="btn btn-shine" onClick={() => track("checkout_click", { where: "stickybar" })}>Get the book</a>
+        <a href={STRIPE_BUY_URL} target="_blank" rel="noopener noreferrer" className="btn btn-shine" onClick={() => checkout("stickybar")}>Get the book</a>
       </div>
     </>
   );

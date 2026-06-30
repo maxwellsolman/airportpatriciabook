@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PRODUCT } from "@/lib/config";
+import Track from "./Track";
 
 export const metadata: Metadata = {
   title: "Your Playbook Is Ready · Airport Patricia",
@@ -46,6 +47,7 @@ export default function ThankYou() {
         padding: "clamp(2rem,7vw,4rem) 1.2rem",
       }}
     >
+      <Track />
       <div style={{ width: "100%", maxWidth: "560px" }}>
         {/* confirmation seal */}
         <div

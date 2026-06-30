@@ -1,0 +1,39 @@
+import type { Metadata } from "next";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import crypto from "node:crypto";
+import { readSnapshot } from "@/lib/snapshot";
+import { posthogConfigured } from "@/lib/posthog";
+import Dashboard from "./Dashboard";
+
+export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Analytics · Airport Patricia",
+  robots: { index: false, follow: false },
+};
+
+function token(): string {
+  const pw = process.env.DASHBOARD_PASSWORD || "Repriced1!";
+  return crypto.createHash("sha256").update("apb|" + pw).digest("hex");
+}
+
+export default async function Page() {
+  const store = await cookies();
+  if (store.get("apb_dash")?.value !== token()) {
+    redirect("/dashboard/login?next=/dashboard");
+  }
+
+  const snapshot = await readSnapshot();
+  const apiHost = process.env.POSTHOG_API_HOST || "https://us.posthog.com";
+  const projectId = process.env.POSTHOG_PROJECT_ID;
+  const posthogUrl = projectId ? `${apiHost}/project/${projectId}` : apiHost;
+
+  return (
+    <Dashboard
+      snapshot={snapshot}
+      configured={posthogConfigured()}
+      posthogUrl={posthogUrl}
+    />
+  );
+}
