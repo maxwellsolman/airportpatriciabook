@@ -24,7 +24,7 @@ const archivo = Archivo({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://airportpatriciabook.vercel.app"),
+  metadataBase: new URL("https://patriciasguide.com"),
   title: "Patricia's Insider Travel Playbook · Stop Leaving Money at the Airport",
   description:
     "Twenty years in travel, written down. Ten insider plays the airlines and airports hope you never learn. Instant PDF, $9.99 today.",
