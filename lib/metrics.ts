@@ -76,23 +76,13 @@ export async function getMetrics(from: string, to: string): Promise<Metrics> {
   );
   base.checkoutClicks = Array.isArray(clicks[0]) ? n((clicks[0] as unknown[])[0]) : 0;
 
-  // 3. purchases (named event preferred; fall back to /thank-you pageviews)
+  // 3. purchases — only the gated 'purchase' event (fired solely on real
+  // post-Stripe visits), so self-visits to /thank-you never count as sales.
   const purch = await safe(
     () => hogql(`SELECT count() FROM events WHERE event = 'purchase' AND ${WIN}`),
     [] as unknown[],
   );
   base.purchases = Array.isArray(purch[0]) ? n((purch[0] as unknown[])[0]) : 0;
-  if (base.purchases === 0) {
-    const ty = await safe(
-      () =>
-        hogql(
-          `SELECT count(distinct person_id) FROM events
-           WHERE event = '$pageview' AND properties.$pathname = '/thank-you' AND ${WIN}`,
-        ),
-      [] as unknown[],
-    );
-    base.purchases = Array.isArray(ty[0]) ? n((ty[0] as unknown[])[0]) : 0;
-  }
 
   // 4. avg time on site (per-session span, capped to filter outliers)
   const dur = await safe(

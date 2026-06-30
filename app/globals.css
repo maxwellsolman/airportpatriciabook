@@ -383,3 +383,15 @@ h1,h2,h3{ font-family:var(--font-display); font-weight:560; line-height:1.02; le
   .aurora,.marquee .track,.off,.btn-glow{ animation:none; }
   html{ scroll-behavior:auto; }
 }
+
+/* ---------- dashboard ---------- */
+@keyframes dRise{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:none; } }
+.d-rise{ animation:dRise .55s cubic-bezier(.2,.7,.2,1) both; }
+.d-card{ transition:transform .2s ease, box-shadow .2s ease; }
+.d-card:hover{ transform:translateY(-2px); box-shadow:0 22px 50px -28px rgba(20,31,48,0.5); }
+.d-bar-fill{ transition:width .9s cubic-bezier(.2,.7,.2,1); }
+.d-pill{ transition:background .15s ease, color .15s ease, border-color .15s ease; }
+@media(prefers-reduced-motion:reduce){
+  .d-rise{ animation:none; }
+  .d-bar-fill{ transition:none; }
+}
