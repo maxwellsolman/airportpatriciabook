@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Newsreader, Archivo } from "next/font/google";
+import { Fraunces, Newsreader, Archivo, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import PostHogInit from "./PostHogInit";
 import "./globals.css";
@@ -25,6 +25,21 @@ const archivo = Archivo({
   display: "swap",
 });
 
+// Dashboard-only (clean sans + tabular mono for data)
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-dash",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-mono",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://patriciasguide.com"),
   title: "Patricia's Insider Travel Playbook · Stop Leaving Money at the Airport",
@@ -46,7 +61,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${newsreader.variable} ${archivo.variable}`}
+      className={`${fraunces.variable} ${newsreader.variable} ${archivo.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
     >
       <body>
         <PostHogInit />

@@ -18,6 +18,7 @@ export type Metrics = {
   pages: { path: string; views: number; visitors: number }[];
   devices: { label: string; visitors: number }[];
   trend: { day: string; visitors: number; pageviews: number }[];
+  trendUnit: "day" | "hour";
   error?: string;
 };
 
@@ -50,17 +51,23 @@ export async function getMetrics(from: string, to: string): Promise<Metrics> {
     pages: [],
     devices: [],
     trend: [],
+    trendUnit: "day",
   };
   if (!base.configured) return base;
 
+  const singleDay = from.slice(0, 10) === to.slice(0, 10);
+  base.trendUnit = singleDay ? "hour" : "day";
+
   const WIN = `timestamp >= toDateTime('${from}') AND timestamp <= toDateTime('${to}')`;
+  // Exclude the private admin dashboard from the marketing-site metrics.
+  const ADMIN = `AND properties.$pathname NOT LIKE '/dashboard%'`;
 
   // 1. visitors + pageviews
   const totals = await safe(
     () =>
       hogql(
         `SELECT count() AS pv, count(distinct person_id) AS visitors
-         FROM events WHERE event = '$pageview' AND ${WIN}`,
+         FROM events WHERE event = '$pageview' AND ${WIN} ${ADMIN}`,
       ),
     [] as unknown[],
   );
@@ -90,7 +97,7 @@ export async function getMetrics(from: string, to: string): Promise<Metrics> {
       hogql(
         `SELECT round(avg(d)) FROM (
            SELECT dateDiff('second', min(timestamp), max(timestamp)) AS d
-           FROM events WHERE ${WIN} AND properties.$session_id IS NOT NULL
+           FROM events WHERE ${WIN} ${ADMIN} AND properties.$session_id IS NOT NULL
            GROUP BY properties.$session_id
            HAVING d BETWEEN 0 AND 3600
          )`,
@@ -105,7 +112,7 @@ export async function getMetrics(from: string, to: string): Promise<Metrics> {
       hogql(
         `SELECT coalesce(nullIf(properties.$referring_domain, ''), '$direct') AS src,
                 count(distinct person_id) AS v
-         FROM events WHERE event = '$pageview' AND ${WIN}
+         FROM events WHERE event = '$pageview' AND ${WIN} ${ADMIN}
          GROUP BY src ORDER BY v DESC LIMIT 8`,
       ),
     [] as unknown[],
@@ -121,7 +128,7 @@ export async function getMetrics(from: string, to: string): Promise<Metrics> {
     () =>
       hogql(
         `SELECT properties.$pathname AS path, count() AS views, count(distinct person_id) AS visitors
-         FROM events WHERE event = '$pageview' AND ${WIN}
+         FROM events WHERE event = '$pageview' AND ${WIN} ${ADMIN}
          GROUP BY path ORDER BY views DESC LIMIT 10`,
       ),
     [] as unknown[],
@@ -137,7 +144,7 @@ export async function getMetrics(from: string, to: string): Promise<Metrics> {
       hogql(
         `SELECT coalesce(nullIf(properties.$device_type, ''), 'Unknown') AS d,
                 count(distinct person_id) AS v
-         FROM events WHERE event = '$pageview' AND ${WIN}
+         FROM events WHERE event = '$pageview' AND ${WIN} ${ADMIN}
          GROUP BY d ORDER BY v DESC`,
       ),
     [] as unknown[],
@@ -147,13 +154,17 @@ export async function getMetrics(from: string, to: string): Promise<Metrics> {
     return { label: String(row[0] ?? "Unknown"), visitors: n(row[1]) };
   });
 
-  // 8. daily trend
+  // 8. trend — hourly for a single day, daily otherwise
   const trend = await safe(
     () =>
       hogql(
-        `SELECT toDate(timestamp) AS day, count(distinct person_id) AS visitors, count() AS pv
-         FROM events WHERE event = '$pageview' AND ${WIN}
-         GROUP BY day ORDER BY day`,
+        singleDay
+          ? `SELECT toHour(timestamp) AS bucket, count(distinct person_id) AS visitors, count() AS pv
+             FROM events WHERE event = '$pageview' AND ${WIN} ${ADMIN}
+             GROUP BY bucket ORDER BY bucket`
+          : `SELECT toDate(timestamp) AS bucket, count(distinct person_id) AS visitors, count() AS pv
+             FROM events WHERE event = '$pageview' AND ${WIN} ${ADMIN}
+             GROUP BY bucket ORDER BY bucket`,
       ),
     [] as unknown[],
   );
