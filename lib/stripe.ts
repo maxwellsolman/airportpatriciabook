@@ -59,6 +59,30 @@ async function collectAll<T>(pager: AsyncIterable<T>, cap: number): Promise<T[]>
   return arr;
 }
 
+// The two creator sites share ONE Stripe account. When STRIPE_PAYMENT_LINK is
+// set, restrict revenue to charges that came through THIS site's payment link,
+// so each dashboard shows only its own brand. Returns the set of matching
+// payment_intent ids, or null to count everything (unset = legacy behavior).
+const PAYMENT_LINK = process.env.STRIPE_PAYMENT_LINK;
+
+async function allowedIntents(
+  stripe: Stripe,
+  created: { gte: number; lte: number },
+): Promise<Set<string> | null> {
+  if (!PAYMENT_LINK) return null;
+  const sessions = await collectAll(
+    stripe.checkout.sessions.list({ created, limit: 100 }),
+    5000,
+  ).catch(() => [] as Stripe.Checkout.Session[]);
+  const set = new Set<string>();
+  for (const s of sessions) {
+    if (s.payment_link !== PAYMENT_LINK) continue;
+    const pi = typeof s.payment_intent === "string" ? s.payment_intent : s.payment_intent?.id;
+    if (pi) set.add(pi);
+  }
+  return set;
+}
+
 // ---- Detailed per-transaction view for the Payments tab ----
 
 export type StripeTxn = {
@@ -157,6 +181,15 @@ async function computeDetails(from: string, to: string): Promise<StripeDetails> 
     return out;
   }
 
+  const allow = PAYMENT_LINK
+    ? new Set(
+        sessions
+          .filter((s) => s.payment_link === PAYMENT_LINK)
+          .map((s) => (typeof s.payment_intent === "string" ? s.payment_intent : s.payment_intent?.id))
+          .filter((x): x is string => !!x),
+      )
+    : null;
+
   const enrich = new Map<string, { tax: number; email: string; name: string }>();
   for (const s of sessions) {
     const pi = typeof s.payment_intent === "string" ? s.payment_intent : s.payment_intent?.id;
@@ -175,6 +208,10 @@ async function computeDetails(from: string, to: string): Promise<StripeDetails> 
 
   for (const ch of charges) {
     if (ch.status !== "succeeded" || !ch.paid) continue;
+    if (allow) {
+      const cpi = typeof ch.payment_intent === "string" ? ch.payment_intent : ch.payment_intent?.id;
+      if (!cpi || !allow.has(cpi)) continue;
+    }
 
     const bt = ch.balance_transaction;
     const feeC = bt && typeof bt !== "string" ? bt.fee : 0;
@@ -294,10 +331,15 @@ async function computeRevenue(from: string, to: string): Promise<StripeRevenue> 
   }
 
   try {
+    const allow = await allowedIntents(stripe, { gte: win.gte, lte: win.lte });
     let grossCents = 0;
     let refundedCents = 0;
     for await (const ch of stripe.charges.list({ created: { gte: win.gte, lte: win.lte }, limit: 100 })) {
       if (ch.status !== "succeeded" || !ch.paid) continue;
+      if (allow) {
+        const pi = typeof ch.payment_intent === "string" ? ch.payment_intent : ch.payment_intent?.id;
+        if (!pi || !allow.has(pi)) continue;
+      }
       base.orders += 1;
       grossCents += ch.amount;
       if (ch.amount_refunded > 0) {
