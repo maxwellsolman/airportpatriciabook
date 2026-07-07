@@ -25,6 +25,13 @@ export async function proxy(req: NextRequest) {
     return NextResponse.next();
   }
 
+  // Service-to-service access for the combined creator dashboard: a request
+  // carrying the shared DASH_SERVICE_TOKEN header may read the data APIs.
+  const svc = process.env.DASH_SERVICE_TOKEN;
+  if (svc && req.headers.get("x-dash-token") === svc) {
+    return NextResponse.next();
+  }
+
   const token = req.cookies.get(COOKIE)?.value;
   const authed = token != null && token === (await expectedToken());
 
