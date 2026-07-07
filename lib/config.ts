@@ -7,6 +7,9 @@
 export const STRIPE_BUY_URL =
   "https://buy.stripe.com/6oUdRa0eOd9Lfws6C43oA00"; // live Stripe Payment Link
 
+// Support / contact address shown on the Contact page and legal pages.
+export const SUPPORT_EMAIL = "support@patriciasguide.com";
+
 export const PRICE = {
   current: "9.99",
   anchor: "19",

@@ -208,10 +208,17 @@ export default function Page() {
             <h1 className="reveal in">
               The money-saving travel guide <span className="em-brass">the airlines hope you never read.</span>
             </h1>
+
+            {/* mobile-only hero visual: her + the book, right under the headline */}
+            <figure className="art-mobile reveal in">
+              <img src="/img/patricia-book-hero.jpg" alt="Patricia holding her Insider Travel Playbook at the airport security checkpoint" />
+              <figcaption className="art-mobile-tag"><b>{PRODUCT.pages}</b> pages of insider plays</figcaption>
+            </figure>
+
             <p className="lede reveal in">
-              I&rsquo;m Patricia, and twenty years working in travel showed me exactly where travelers
-              overpay. My Insider Travel Playbook hands you <b>10 simple plays to save money</b> on flights and
-              hotels, the same ones I&rsquo;d give my own niece before she flies.
+              For twenty years I watched travelers hand over money they never had to. These are the{" "}
+              <b>10 insider plays</b>{" "}I&rsquo;d give my own family, so you stop overpaying for the same seat and
+              the same room as everyone else on the plane.
             </p>
 
             <div className="hchips reveal in">
@@ -471,10 +478,10 @@ export default function Page() {
               <span className="seal-sm"><Seal size={28} onDark /></span> Airport Patricia
             </div>
             <div className="links">
-              <a href="#">Contact</a>
-              <a href="#">Terms</a>
-              <a href="#">Privacy</a>
-              <a href="#">Refunds</a>
+              <a href="/contact">Contact</a>
+              <a href="/terms">Terms</a>
+              <a href="/privacy">Privacy</a>
+              <a href="/refunds">Refunds</a>
             </div>
           </div>
           <div className="fine">

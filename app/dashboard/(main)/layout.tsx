@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import crypto from "node:crypto";
 import { posthogConfigured } from "@/lib/posthog";
-import Dashboard from "./Dashboard";
+import { DashShell } from "../shell";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +17,7 @@ function token(): string {
   return crypto.createHash("sha256").update("apb|" + pw).digest("hex");
 }
 
-export default async function Page() {
+export default async function MainLayout({ children }: { children: React.ReactNode }) {
   const store = await cookies();
   if (store.get("apb_dash")?.value !== token()) {
     redirect("/dashboard/login?next=/dashboard");
@@ -27,5 +27,9 @@ export default async function Page() {
   const projectId = process.env.POSTHOG_PROJECT_ID;
   const posthogUrl = projectId ? `${apiHost}/project/${projectId}` : apiHost;
 
-  return <Dashboard configured={posthogConfigured()} posthogUrl={posthogUrl} />;
+  return (
+    <DashShell posthogUrl={posthogUrl} configured={posthogConfigured()}>
+      {children}
+    </DashShell>
+  );
 }

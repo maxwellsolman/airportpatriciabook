@@ -1,4 +1,5 @@
 import { hogql, posthogConfigured } from "./posthog";
+import { getStripeRevenue, type StripeRevenue } from "./stripe";
 
 // Each metric is computed independently and guarded, so one failing query
 // never blanks the whole dashboard. `from`/`to` are "YYYY-MM-DD HH:MM:SS" (UTC).
@@ -10,6 +11,7 @@ export type Metrics = {
   pageviews: number;
   checkoutClicks: number;
   purchases: number;
+  stripe: StripeRevenue; // real revenue/orders from Stripe (configured flag inside)
   avgSeconds: number;
   conversionRate: number; // purchases / visitors
   clickRate: number; // checkoutClicks / visitors
@@ -43,6 +45,7 @@ export async function getMetrics(from: string, to: string): Promise<Metrics> {
     pageviews: 0,
     checkoutClicks: 0,
     purchases: 0,
+    stripe: { configured: false, revenue: 0, gross: 0, refunded: 0, orders: 0, refundCount: 0 },
     avgSeconds: 0,
     conversionRate: 0,
     clickRate: 0,
@@ -53,12 +56,22 @@ export async function getMetrics(from: string, to: string): Promise<Metrics> {
     trend: [],
     trendUnit: "day",
   };
-  if (!base.configured) return base;
+  // Real revenue from Stripe — runs regardless of whether PostHog is set up.
+  base.stripe = await safe(() => getStripeRevenue(from, to), base.stripe);
+
+  if (!base.configured) {
+    // No PostHog, but still surface real Stripe orders as the purchase count.
+    if (base.stripe.configured) base.purchases = base.stripe.orders;
+    return base;
+  }
 
   const singleDay = from.slice(0, 10) === to.slice(0, 10);
   base.trendUnit = singleDay ? "hour" : "day";
 
-  const WIN = `timestamp >= toDateTime('${from}') AND timestamp <= toDateTime('${to}')`;
+  // Hard "analytics start" floor — ignore everything before go-live (clears test data).
+  const start = process.env.ANALYTICS_START;
+  const fromEff = start && start > from ? start : from;
+  const WIN = `timestamp >= toDateTime('${fromEff}') AND timestamp <= toDateTime('${to}')`;
   // Exclude the private admin dashboard from the marketing-site metrics.
   const ADMIN = `AND properties.$pathname NOT LIKE '/dashboard%'`;
 
@@ -172,6 +185,10 @@ export async function getMetrics(from: string, to: string): Promise<Metrics> {
     const row = r as unknown[];
     return { day: String(row[0] ?? ""), visitors: n(row[1]), pageviews: n(row[2]) };
   });
+
+  // When Stripe is connected its real order count is the source of truth for
+  // sales (the behavioral 'purchase' event can be blocked by ad blockers / iOS).
+  if (base.stripe.configured) base.purchases = base.stripe.orders;
 
   base.clickRate = base.visitors ? base.checkoutClicks / base.visitors : 0;
   base.conversionRate = base.visitors ? base.purchases / base.visitors : 0;

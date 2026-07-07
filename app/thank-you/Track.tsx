@@ -15,6 +15,11 @@ export default function Track() {
     if (!fromStripe) return;
     track("purchase");
     phCapture("purchase");
+    // Meta Pixel Purchase — for ad conversion tracking & optimization
+    const fbq = (window as unknown as { fbq?: (...a: unknown[]) => void }).fbq;
+    if (typeof fbq === "function") {
+      fbq("track", "Purchase", { value: 9.99, currency: "USD" });
+    }
   }, []);
   return null;
 }
